@@ -20,7 +20,7 @@ const Create = () => {
     // console.log(blogObj)
     // await axios
     try {
-      await axios.post('',blogObj)
+      await axios.post('http://localhost:8080/blogs',blogObj)
     } catch (error) {
       
     }

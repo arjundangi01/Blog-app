@@ -11,7 +11,7 @@ const Signup = () => {
       <h1 className="text-3xl mb-12 ">Join Medium.</h1>
       <div className="flex flex-col gap-y-3 items-center">
         <div>
-          <a href="http://localhost:8080/auth/google">
+          <a href="https://github.com/login/oauth/authorize?client_id=8d7d6fd6c9ff670edfd4">
           <button class=" font-semibold py-2 px-4 rounded-full border border-black  ">
             <span class="ml-2">Sign up with Google</span>
           </button>

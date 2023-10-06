@@ -2,7 +2,8 @@ import React from "react";
 import logo from "../../assets/logo.png";
 import { BsPencilSquare } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const Navbar = () => {
+const Navbar = ({ userDetailObj }) => {
+  console.log(userDetailObj?.avatar_url);
   return (
     <nav className="flex justify-between items-center px-1 sm:px-2 py-2 fixed bg-white  border-b-2  top-0  w-full border-grey-400">
       <div className="flex items-center md:gap-4 gap-2 ">
@@ -18,20 +19,30 @@ const Navbar = () => {
         />
       </div>
       <div className="flex gap-3 md:gap-7 ">
-        <Link to="/create" className="flex  items-center">
-          <p className="flex  items-center md:text-lg md:gap-2 cursor-pointer">
-            {" "}
-            <span>
-              <BsPencilSquare />
-            </span>{" "}
-            Write
-          </p>
-        </Link>
-        <Link to='/signup' >
-          <button className="border border-grey-500 py-1 sm:py-2 sm:px-2 px-1 rounded-lg bg-blue-500 text-white">
-            Get Started
-          </button>
-        </Link>
+        {userDetailObj ? (
+          <Link to="/create" className="flex  items-center">
+            <p className="flex  items-center md:text-lg md:gap-2 cursor-pointer">
+              {" "}
+              <span>
+                <BsPencilSquare />
+              </span>{" "}
+              Write
+            </p>
+            <Link>
+              <img
+                className="w-8 ml-2 rounded-3xl"
+                src={userDetailObj?.avatar_url}
+                alt=""
+              />
+            </Link>
+          </Link>
+        ) : (
+          <Link to="/signup">
+            <button className="border border-grey-500 py-1 sm:py-2 sm:px-2 px-1 rounded-lg bg-blue-500 text-white">
+              Get Started
+            </button>
+          </Link>
+        )}
       </div>
     </nav>
   );

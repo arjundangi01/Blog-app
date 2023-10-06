@@ -10,13 +10,13 @@ const blogSchema = mongoose.Schema(
   {
     title: String,
     content: String,
-    likesCount: Number,
-    commentsCount: Number,
+    likesCount: Number, 
+    category: String,
     author: {
       authorId: String,
       authorName: String,
     },
-    category: String,
+   
   }, {
     timestamps: true,
   }
