@@ -16,9 +16,9 @@ const Card = () => {
         <p>Sep 4</p>
       </div>
       <div className="flex items-start gap-3 mt-3 mb-3  justify-between">
-        <h5 className="font-bold">
+        <p className="font-bold">
           The nine best Hustles You Can Start Earning With In 2023
-        </h5>
+        </p>
         <img src={tech} alt="" className="w-1/4" />
       </div>
       <div className="flex items-center justify-between ">

@@ -9,7 +9,7 @@ const Sidebar_card = () => {
         className="w-4 h-4"
         alt=""
       />
-      <h className="font-medium text-sm ">Arjun Dangi</h>
+      <p className="font-medium text-sm ">Arjun Dangi</p>
       <p className="font-medium text-sm ">Sep 4</p>
     </div>
     <div>
