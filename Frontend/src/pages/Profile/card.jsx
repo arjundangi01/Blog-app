@@ -16,18 +16,23 @@ import {
   Button,
   Portal,
 } from "@chakra-ui/react";
+import axios from "axios";
 const Card = ({ author, category, content, title, createdAt, _id }) => {
   const date = new Date(createdAt);
 
   // Get the day and month names
   const day = date.getDate();
   const month = date.toLocaleString("en-US", { month: "short" });
+  const onDelete = async () => {
+    const response = await axios.delete(`http://localhost:8080/blogs/${_id}`)
+    window.location.reload()
+  }
   return (
     <div className=" border-b-2 border-gray-100 mt-8 pb-4">
       <div className="flex gap-4   ">
         <p>{day + " " + month}</p>
       </div>
-      <Link to="blog/1">
+      <Link to={`/blog/${_id}`}>
         <div className="flex items-start gap-3 mt-3 mb-3  justify-between">
           <div>
             <p className="font-bold text-lg ">{title}</p>
@@ -48,17 +53,22 @@ const Card = ({ author, category, content, title, createdAt, _id }) => {
             {" "}
             <BsBookmark />{" "}
           </p>
-          <div className="relative " >
+          <div className="relative ">
             <Popover placement="top-start" className="w-4">
               <PopoverTrigger>
                 <BsThreeDots />
               </PopoverTrigger>
-              <PopoverContent className="w-4" >
+              <PopoverContent className="w-4">
                 <PopoverArrow />
                 <PopoverCloseButton />
-                <PopoverBody className="flex items-center gap-2 w-4">
-                  <Link to={`/update/${_id}`} ><p className="cursor-pointer" >Edit</p></Link>
-                  
+                <PopoverBody >
+                  <div  className="flex-col  cursor-pointer" >
+                    <Link to={`/update/${_id}`}>
+                      <p className="cursor-pointer my-2 ">Edit</p>
+                    </Link>
+                    <hr />
+                    <p onClick={onDelete} className="my-2" >Delete</p>
+                  </div>
                 </PopoverBody>
               </PopoverContent>
             </Popover>
