@@ -31,9 +31,9 @@ const LikeShare = () => {
             </PopoverHeader>
             <PopoverArrow />
             <PopoverCloseButton />
-            <PopoverBody>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore.
+            <PopoverBody className="flex items-center gap-2" >
+              <input type="text" placeholder="write comment" className="border ps-2 " />
+              <Button>ADD</Button>
             </PopoverBody>
           </PopoverContent>
         </Popover>

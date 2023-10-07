@@ -27,7 +27,7 @@ const Allroutes = () => {
       <Route path="/login" element={<Login />}>
         {" "}
       </Route>
-      <Route path="/profile" element={<Profile />}>
+      <Route path="/profile/:userID" element={<Profile />}>
         {" "}
       </Route>
     </Routes>

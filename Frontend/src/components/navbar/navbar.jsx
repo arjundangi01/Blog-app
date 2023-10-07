@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import logo from "../../assets/logo.png";
 import { BsPencilSquare } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const Navbar = ({getUserDetail}) => {
+const Navbar = () => {
   const [userDetailObj,setUserDetailObj] = useState(null)
   const [userToken,setUserToken] = useState(null)
   useEffect(  () => {
@@ -31,7 +31,7 @@ const Navbar = ({getUserDetail}) => {
       })
       // console.log(user.data)
       setUserDetailObj(user.data)
-      getUserDetail(user.data)
+      
     } catch (error) {
       console.log(error)
       
@@ -40,7 +40,7 @@ const Navbar = ({getUserDetail}) => {
 
  
   return (
-    <nav className="flex justify-between items-center px-1 sm:px-2 py-2 fixed bg-white  border-b-2  top-0  w-full border-grey-400">
+    <nav className="flex justify-between items-center px-1 lg:px-10 sm:px-2 py-2 fixed bg-white z-10  border-b-2  top-0  w-full border-grey-400">
       <div className="flex items-center md:gap-4 gap-2 ">
         <Link to='/' >
         <img
@@ -65,7 +65,7 @@ const Navbar = ({getUserDetail}) => {
               </span>{" "}
               Write
             </p>
-            <Link to='profile' >
+            <Link to={`/profile/${userDetailObj?._id}`} >
               <img
                 className="w-8 ml-2 rounded-3xl"
                 src={userDetailObj?.picture}

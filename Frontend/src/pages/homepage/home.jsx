@@ -4,10 +4,23 @@ import Card from "./card";
 import Sidebar from "./sidebar";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const Home = () => {
- 
+  const [blogs, setBlogs] = useState([]);
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+  const fetchBlogs = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/blogs");
+      // console.log(response.data);
+      setBlogs(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -20,41 +33,12 @@ const Home = () => {
             <p>Sports</p>
             <p>Economics</p>
           </div>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
-          <Link to="blog/1">
-            {" "}
-            <Card />{" "}
-          </Link>
+          {blogs?.map((ele) => (
+            <Card key={ele._id} {...ele} />
+          ))}
         </div>
         <div className="w-[40%] border-l-2 hidden lg:block border-gray-200 pl-12  ">
-          <Sidebar />
+          <Sidebar  />
         </div>
       </div>
     </>

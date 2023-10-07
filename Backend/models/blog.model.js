@@ -15,6 +15,7 @@ const blogSchema = mongoose.Schema(
     author: {
       authorId: String,
       authorName: String,
+      picture:String
     },
    
   }, {
