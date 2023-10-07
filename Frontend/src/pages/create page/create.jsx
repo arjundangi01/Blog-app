@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/navbar";
 import Navbar2 from "../../components/navbar/navbar2";
 import axios from 'axios'
+import Cookies from 'js-cookie';
+
 const initialObj = {
   title: "",
   content: "",
@@ -10,6 +12,20 @@ const initialObj = {
 };
 const Create = () => {
   const [blogObj, setBlogObj] = useState(initialObj);
+  const [userToken,setUserToken] = useState(null)
+
+  useEffect(  () => {
+    // Access the cookie by name
+    const userToken = Cookies.get('userToken');
+ 
+    if (userToken) {
+      setUserToken(userToken)
+      // fetchUser(userToken)
+      console.log('Value from cookie:', userToken);
+    } else {
+      console.log('Cookie not found');
+    }
+  }, []);
   const handleChange = (event) => {
     event.preventDefault();
     const { value, name } = event.target;
@@ -19,8 +35,16 @@ const Create = () => {
   const onPublish = async() => {
     // console.log(blogObj)
     // await axios
+    const headers = {
+      'Authorization': `Bearer ${userToken}`, 
+       
+    };
     try {
-      await axios.post('http://localhost:8080/blogs',blogObj)
+      const newBlog = await axios.post('http://localhost:8080/blogs', blogObj, {
+       headers:headers
+     })
+      window.location.assign('/')
+      // console.log(newBlog)
     } catch (error) {
       
     }

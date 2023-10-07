@@ -6,6 +6,7 @@ import Read from "../pages/read page/read";
 import Signup from "../pages/login and signup/signup";
 import Login from "../pages/login and signup/login";
 import Update from "../pages/update page/update";
+import Profile from "../pages/Profile/profile";
 
 const Allroutes = () => {
   return (
@@ -24,6 +25,9 @@ const Allroutes = () => {
         {" "}
       </Route>
       <Route path="/login" element={<Login />}>
+        {" "}
+      </Route>
+      <Route path="/profile" element={<Profile />}>
         {" "}
       </Route>
     </Routes>
