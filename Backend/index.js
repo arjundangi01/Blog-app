@@ -15,8 +15,6 @@ const { UserModel } = require("./models/User.model");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-const client_id = "8d7d6fd6c9ff670edfd4";
-const client_secret = "c850ed8058adce21e87027a23450d7b49991ae20";
 
 app.use(cookieParser());
 
