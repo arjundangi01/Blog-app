@@ -27,6 +27,7 @@ blogRouter.get("/", async (req, res) => {
   res.send(data);
 });
 
+
 // blog content
 // user -userid username
 blogRouter.post("/", jwtVerify, async (req, res) => {
