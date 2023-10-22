@@ -12,16 +12,20 @@ const jwtVerify = require("../middlewares/jwtverify");
 const blogRouter = express.Router();
 
 blogRouter.get("/", async (req, res) => {
-  const filter = {};
-  const { q, user } = req.query;
+  const filterObj = {};
+  const { q, user,filter,page } = req.query;
   if (q) {
-    filter["_id"] = q;
+    filterObj["_id"] = q;
+  }
+  if (filter) {
+    // console.log(filter)
+    filterObj['category'] = filter;
   }
   if (user) {
     const data = await BlogModel.find({ "author.authorId": user });
     return res.send(data);
   }
-  const data = await BlogModel.find(filter);
+  const data = await BlogModel.find(filterObj).skip(page*4-4).limit(4);
   // console.log(data)
 
   res.send(data);

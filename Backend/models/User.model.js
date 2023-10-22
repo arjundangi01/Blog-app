@@ -8,11 +8,20 @@ const userSchema = mongoose.Schema(
     family_name: String,
     picture: String,
     email: String,
+    follower: {
+      type: Number,
+      default:0
+    }
   },
   {
     timestamps: true,
   }
 );
+const userFollowSchema = mongoose.Schema({
+  followTo: String,
+  followBy: String,
+});
 
 const UserModel = mongoose.model("user", userSchema);
-module.exports = { UserModel };
+const UserFollowModel = mongoose.model("userFollow", userFollowSchema);
+module.exports = { UserModel,UserFollowModel };
