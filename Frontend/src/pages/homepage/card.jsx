@@ -3,10 +3,10 @@ import tech from "../../assets/tech Blog.jpg";
 import { BsBookmark } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
-
-const Card = ({ author, category, content, title,createdAt,_id }) => {
-
-
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+const Card = ({ author, category, content, title, createdAt, _id }) => {
   // Create a Date object from the timestamp
   const date = new Date(createdAt);
 
@@ -16,16 +16,26 @@ const Card = ({ author, category, content, title,createdAt,_id }) => {
   return (
     <div className=" border-b-2 border-gray-100 mt-8 pb-4">
       <div className="flex gap-4   ">
-        <img src={author.picture} className="w-6 rounded-2xl " alt="" />
+        
+          <img src={author.picture} className="w-6 rounded-2xl " alt="" />
+       
+
         <p>{author.authorName}</p>
-        <p>{day+" "+ month }</p>
+        <p>{day + " " + month}</p>
       </div>
-      <Link to={`/blog/${_id}`} >
+      <Link to={`/blog/${_id}`}>
         <div className="flex items-start gap-3 mt-3 mb-3  justify-between">
           <div>
             <p className="font-bold text-lg ">{title}</p>
             <div className="hidden lg:block  line-clamp-3  ">
-              <p className="line-clamp-3">{content}</p>
+            <ReactMarkdown
+              className="text-base line-clamp-3  "
+              children={content}
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+              // linkTarget="_blank"
+            />
+              {/* <p className="line-clamp-3">{content}</p> */}
             </div>
           </div>
 

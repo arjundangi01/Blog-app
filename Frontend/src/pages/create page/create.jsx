@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/navbar";
 import Navbar2 from "../../components/navbar/navbar2";
-import axios from 'axios'
+import axios from 'axios';
 import Cookies from 'js-cookie';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import styles
 const initialObj = {
   title: "",
   content: "",
@@ -12,45 +13,44 @@ const initialObj = {
 };
 const Create = () => {
   const [blogObj, setBlogObj] = useState(initialObj);
-  const [userToken,setUserToken] = useState(null)
+  const [userToken, setUserToken] = useState(null);
 
-  useEffect(  () => {
+  useEffect(() => {
     // Access the cookie by name
     const userToken = Cookies.get('userToken');
- 
+
     if (userToken) {
-      setUserToken(userToken)
-      // fetchUser(userToken)
+      setUserToken(userToken);
       console.log('Value from cookie:', userToken);
     } else {
       console.log('Cookie not found');
     }
   }, []);
+
   const handleChange = (event) => {
     event.preventDefault();
     const { value, name } = event.target;
-    // console.log(value,name)
     setBlogObj({ ...blogObj, [name]: value });
   };
-  const onPublish = async() => {
-    // console.log(blogObj)
-    // await axios
+
+  const handleContentChange = (content) => {
+    setBlogObj({ ...blogObj, content });
+  };
+
+  const onPublish = async () => {
     const headers = {
-      'Authorization': `Bearer ${userToken}`, 
-       
+      'Authorization': `Bearer ${userToken}`,
     };
     try {
       const newBlog = await axios.post('http://localhost:8080/blogs', blogObj, {
-       headers:headers
-     })
+        headers: headers
+      })
       window.location.assign('/')
-      // console.log(newBlog)
     } catch (error) {
-      
+      // Handle the error
     }
-    
-    
   };
+
   return (
     <>
       <Navbar2 onPublish={onPublish} />
@@ -66,7 +66,7 @@ const Create = () => {
           <select
             name="category"
             id=""
-            className="border-transparent "
+            className="border-transparent"
             onChange={handleChange}
           >
             <option value="">Select Category</option>
@@ -77,12 +77,19 @@ const Create = () => {
           </select>
         </div>
         <div>
-          <textarea
-            name="content"
-           
-            className="border focus:outline-none focus:ring-0 text-justify px-2 w-full h-[100vh]  rounded " 
-            onChange={handleChange}
-          ></textarea>
+          <ReactQuill
+            value={blogObj.content}
+            onChange={handleContentChange}
+            modules={{
+              toolbar: [
+                [{ 'header': '1' }, { 'header': '2' }],
+                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+              ],
+            }}
+          />
         </div>
       </div>
     </>

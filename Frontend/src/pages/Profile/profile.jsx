@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/navbar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Card from "./card";
 import Cookies from "js-cookie";
 
@@ -35,6 +35,8 @@ const Profile = () => {
       console.log(blogResponse.data);
       setUserDetailObj(userResponse.data);
       setUserBlogs(blogResponse.data);
+      console.log(userResponse.data);
+
 
       // setBlog(response.data[0]);
       // const date = new Date(response.data[0].createdAt);
@@ -42,6 +44,13 @@ const Profile = () => {
       console.log(error);
     }
   };
+  const navigate = useNavigate();
+  const onLogout = () => {
+    setUserDetailObj(null);
+    setUserDetailObj([]);
+    document.cookie = `userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    navigate('/')
+  }
 
   // fetchUserBlog();
   // if (!userDetailObj) {
@@ -59,7 +68,7 @@ const Profile = () => {
       <div className="w-full lg:w-11/12 xl:w-9/12 md:w-9/12 m-auto flex gap-20 mt-16">
         {!userDetailObj ? (
           <div className="px-4 py-6 w-[85%]">
-            <Box padding="6" boxShadow="lg" bg="white"  >
+            <Box padding="6" boxShadow="lg" bg="white">
               <SkeletonCircle size="10" />
               <SkeletonText
                 mt="4"
@@ -78,6 +87,10 @@ const Profile = () => {
                 alt=""
               />
               <h2 className="text-lg font-bold">{userDetailObj?.name}</h2>
+              <h2 className="text-lg font-bold" > Followers {userDetailObj?.follower}</h2>
+              <button onClick={onLogout} class="border border-black rounded-2xl bg-white text-black font-bold py-1 px-3">
+                Logout
+              </button>
             </div>
             <div className="border-b-2 flex  py-4 gap-3 ">
               <p className="border-b-2">All Blogs</p>
