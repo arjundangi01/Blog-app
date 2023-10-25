@@ -14,15 +14,56 @@ userRouter.get("/", jwtVerify, async (req, res) => {
     const userID = req.userID;
     // console.log("token", userID)
     const findUser = await UserModel.findOne({ _id: userID });
-    res.send(findUser);
+    const findUserBlogs = await BlogModel.find({ "author.authorId": userID });
+    const findUserFollowers = await UserFollowModel.find({ followTo: userID }, { _id: 0, followTo: 0, __v: 0 });
+    const findUserFollowsTo = await UserFollowModel.find({ followBy: userID }, { _id: 0, followBy: 0, __v: 0 });
+    const userFollowers = findUserFollowers.map((ele) => ele.followBy);
+    const userFollowsTo = findUserFollowsTo.map((ele) => ele.followTo);
+
+    res.send({
+      userDetail: findUser,
+      userBlogs: findUserBlogs,
+      userFollowers,
+      userFollowsTo
+    });
   } catch (error) {
     console.log(error);
   }
 });
+userRouter.get("/one/:userID",  async (req, res) => {
+  try {
+    const { userID } = req.params;
+    console.log('id',userID)
+    // console.log("token", userID)
+    const findUser = await UserModel.findOne({ _id: userID });
+    const findUserBlogs = await BlogModel.find({ "author.authorId": userID });
+    const findUserFollowers = await UserFollowModel.find({ followTo: userID }, { _id: 0, followTo: 0, __v: 0 });
+    const findUserFollowsTo = await UserFollowModel.find({ followBy: userID }, { _id: 0, followBy: 0, __v: 0 });
+    const userFollowers = findUserFollowers.map((ele) => ele.followBy);
+    const userFollowsTo = findUserFollowsTo.map((ele) => ele.followTo);
+
+    // [{ followBy }, {}]
+   
+    
+    // user( in: ['hjkh', 'hjkhk'])
+
+    res.send({
+      userDetail: findUser,
+      userBlogs: findUserBlogs,
+      userFollowers,
+      userFollowsTo
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 userRouter.get("/all", async (req, res) => {
   try {
     // console.log("token", userID)
+    console.log('first')
     const findUser = await UserModel.find({});
+
     res.send(findUser);
   } catch (error) {
     console.log(error);
@@ -69,35 +110,51 @@ userRouter.post("/login", async (req, res) => {
   } catch (error) {}
 });
 
-
-userRouter.post('/follow', jwtVerify, async (req, res) => {
+userRouter.post("/follow", jwtVerify, async (req, res) => {
   try {
-    const {followTo} = req.body
-    const  userID  = req.userID;
+    const { followTo } = req.body;
+    const userID = req.userID;
     // console.log(followTo,userID)
-    const checkForAlreadyFollow = await UserFollowModel.findOne({ followTo, followBy: userID });
+    const checkForAlreadyFollow = await UserFollowModel.findOne({
+      followTo,
+      followBy: userID,
+    });
     if (checkForAlreadyFollow) {
-      return res.send({message:'Already Follow'})
+      return res.send({ message: "Already Follow" });
     }
-    const addFollowToDB = await UserFollowModel.create({ followTo, followBy: userID })
-    const increaseFollower = await UserModel.updateOne({_id:userID},{ $inc: { follower : 1 } })
-    res.send({mes:'done'})
-  } catch (error) {
-    
-  }
-})
-userRouter.delete('/follow', jwtVerify, async (req, res) => {
+    const addFollowToDB = await UserFollowModel.create({
+      followTo,
+      followBy: userID,
+    });
+    const increaseFollower = await UserModel.updateOne(
+      { _id: userID },
+      { $inc: { follower: 1 } }
+    );
+    res.send({ mes: "done" });
+  } catch (error) {}
+});
+userRouter.post("/unfollow", jwtVerify, async (req, res) => {
   try {
-    const {unFollowTo} = req.body
-    const { userID } = req.userID;
-    const checkForAlreadyFollow = await UserFollowModel.findOne({ followTo:unFollowTo, followBy: userID });
+    const { unFollowTo } = req.body;
+    const  userID  = req.userID;
+    console.log(unFollowTo,userID)
+    const checkForAlreadyFollow = await UserFollowModel.findOne({
+      followTo: unFollowTo,
+      followBy: userID,
+    });
     if (!checkForAlreadyFollow) {
-      return res.send({message:'Already UnFollow'})
+      console.log(checkForAlreadyFollow)
+      return res.send({ message: "Already UnFollow" });
     }
-    const deleteFollowFromDB = await UserFollowModel.deleteOne({ followTo:unFollowTo, followBy: userID })
-    const decreaseFollower = await UserModel.updateOne({userID},{ $inc: { follower : -1 } })
-  } catch (error) {
-    
-  }
-})
+    const deleteFollowFromDB = await UserFollowModel.deleteOne({
+      followTo: unFollowTo,
+      followBy: userID,
+    });
+    const decreaseFollower = await UserModel.updateOne(
+      { userID },
+      { $inc: { follower: -1 } }
+    );
+    res.send({message:'unfollwed'})
+  } catch (error) {}
+});
 module.exports = userRouter;

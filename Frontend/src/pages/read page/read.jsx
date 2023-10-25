@@ -3,22 +3,25 @@ import Navbar from "../../components/navbar/navbar";
 import LikeShare from "./likeShare";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import DOMPurify from 'dompurify';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import DOMPurify from "dompurify";
+import BlogREadLoader from "../../components/blogreadLoader";
 
 const Read = () => {
   // ... (existing code)
   const [blog, setBlog] = useState();
-  const [time, setTime] = useState({}); 
- 
+  const [time, setTime] = useState({});
+  const [isLoadingState, setIsLoadingState] = useState(false);
+
   const { blogID } = useParams();
   useEffect(() => {
     fetchBlog();
   }, []);
   // console.log(id)
   const fetchBlog = async () => {
+    setIsLoadingState(true);
     try {
       const response = await axios.get(
         `http://localhost:8080/blogs?q=${blogID}`
@@ -30,9 +33,11 @@ const Read = () => {
       // Get the day and month names
       const day = date.getDate();
       const month = date.toLocaleString("en-US", { month: "short" });
-      setTime({day,month})
+      setTime({ day, month });
+      setIsLoadingState(false);
     } catch (error) {
       console.log(error);
+      setIsLoadingState(false);
     }
   };
 
@@ -62,13 +67,17 @@ const Read = () => {
         </div>
         <div>
           <div className=" ">
-            <ReactMarkdown
-              className="text-base lg:text-lg font-medium tracking-[0.02em] prose-p:text-red-400 text-lightGray"
-              children={blog?.content}
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
-              // linkTarget="_blank"
-            />
+            {isLoadingState ? (
+              <BlogREadLoader/>
+            ) : (
+              <ReactMarkdown
+                className="text-base lg:text-lg font-medium tracking-[0.02em] prose-p:text-red-400 text-lightGray"
+                children={blog?.content}
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                // linkTarget="_blank"
+              />
+            )}
           </div>
         </div>
         <LikeShare />

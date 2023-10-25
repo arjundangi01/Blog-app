@@ -13,7 +13,9 @@ const initialObj = {
 };
 const Update = () => {
   const [blogObj, setBlogObj] = useState(initialObj);
-  const [userToken,setUserToken] = useState(null)
+  const [userToken, setUserToken] = useState(null)
+  const [isLoadingState, setIsLoadingState] = useState(false);
+  
   const { blogID } = useParams();
   useEffect(  () => {
     // Access the cookie by name

@@ -17,6 +17,7 @@ const blogSchema = mongoose.Schema(
       authorName: String,
       picture:String
     },
+    bannerImage:String
    
   }, {
     timestamps: true,

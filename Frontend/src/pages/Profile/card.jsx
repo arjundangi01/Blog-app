@@ -2,7 +2,7 @@ import React from "react";
 import tech from "../../assets/tech Blog.jpg";
 import { BsBookmark } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Popover,
   PopoverTrigger,
@@ -17,16 +17,32 @@ import {
   Portal,
 } from "@chakra-ui/react";
 import axios from "axios";
-const Card = ({ author, category, content, title, createdAt, _id }) => {
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import { useSelector } from "react-redux";
+import DOMPurify from "dompurify";
+import HomeLoader from "../homepage/homeloader";
+const Card = ({ author, category, content, title, createdAt, _id,bannerImage }) => {
   const date = new Date(createdAt);
+  const { isAuthenticated, userDetail,  userId } = useSelector(
+    (store) => store.userReducer
+  );
 
   // Get the day and month names
   const day = date.getDate();
   const month = date.toLocaleString("en-US", { month: "short" });
   const onDelete = async () => {
-    const response = await axios.delete(`http://localhost:8080/blogs/${_id}`)
-    window.location.reload()
-  }
+    const response = await axios.delete(`http://localhost:8080/blogs/${_id}`);
+    window.location.reload();
+  };
+  const { userID } = useParams();
+
+  console.log('idss', userID, userId)
+  const sanitizedContent = DOMPurify.sanitize(content, {
+    FORBID_TAGS: ["img"],
+  });
+ 
   return (
     <div className=" border-b-2 border-gray-100 mt-8 pb-4">
       <div className="flex gap-4   ">
@@ -37,10 +53,16 @@ const Card = ({ author, category, content, title, createdAt, _id }) => {
           <div>
             <p className="font-bold text-lg ">{title}</p>
             <div className="hidden lg:block  line-clamp-3  ">
-              <p className="line-clamp-3">{content}</p>
+              {/* <p className="line-clamp-3">{content}</p> */}
+              <ReactMarkdown
+                className="text-base line-clamp-3"
+                children={sanitizedContent}
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+              />
             </div>
           </div>
-          <img src={tech} alt="" className="w-1/4" />
+          <img src={bannerImage} alt="" className="w-1/4" />
         </div>
       </Link>
       <div className="flex items-center justify-between ">
@@ -54,20 +76,29 @@ const Card = ({ author, category, content, title, createdAt, _id }) => {
             <BsBookmark />{" "}
           </p>
           <div className="relative ">
-            <Popover placement="top-start" className="w-4">
+            <Popover placement="top-start"  >
               <PopoverTrigger>
                 <BsThreeDots />
               </PopoverTrigger>
-              <PopoverContent className="w-4">
+              <PopoverContent w='100px'>
                 <PopoverArrow />
                 <PopoverCloseButton />
-                <PopoverBody >
-                  <div  className="flex-col  cursor-pointer" >
-                    <Link to={`/update/${_id}`}>
-                      <p className="cursor-pointer my-2 ">Edit</p>
-                    </Link>
-                    <hr />
-                    <p onClick={onDelete} className="my-2" >Delete</p>
+                <PopoverBody>
+                  <div className="flex-col  cursor-pointer">
+                    
+                    {userId != userID ? (
+                      <p className="cursor-pointer my-2 ">view</p>
+                    ) : (
+                      <>
+                        <Link to={`/update/${_id}`}>
+                          <p className="cursor-pointer my-2 ">Edit</p>
+                          </Link>
+                          <hr />
+                        <p onClick={onDelete} className="my-2">
+                          Delete
+                        </p>
+                      </>
+                    )}
                   </div>
                 </PopoverBody>
               </PopoverContent>

@@ -6,51 +6,50 @@ import Cookies from "js-cookie";
 
 import axios from "axios";
 import { Box, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogoutAction } from "../../Redux/user_reducer/user.action";
+import HomeLoader from "../homepage/homeloader";
+import ProfileLoader from "../../components/profileLoader";
 
 const Profile = () => {
-  const [userDetailObj, setUserDetailObj] = useState(null);
+  const [userDetailState, setUserDetailState] = useState(null);
   const [userBlogs, setUserBlogs] = useState([]);
+  const [userFollowersState, setUserFollowersState] = useState([]);
+  const [userFollowsToState, setUserFollowsToState] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { userID } = useParams();
-  console.log(userID);
+  const dispatch = useDispatch();
+  // console.log(userID);
+  const { isAuthenticated, userId, userFollowersCount } = useSelector(
+    (store) => store.userReducer
+  );
 
   useEffect(() => {
-    fetchUserBlog(userID);
-  }, []);
-
-  console.log("first");
-
-  const fetchUserBlog = async (userID) => {
-    const userToken = Cookies.get("userToken");
-
-    const headers = {
-      Authorization: `Bearer ${userToken}`,
-    };
+    fetchUserDetail(userID);
+  }, [userID]);
+  const fetchUserDetail = async (userId) => {
+    setIsLoading(true);
     try {
-      const userResponse = await axios.get("http://localhost:8080/user", {
-        headers: headers,
-      });
-      const blogResponse = await axios.get(
-        `http://localhost:8080/blogs?user=${userID}`
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user/one/${userId}`
       );
-      console.log(blogResponse.data);
-      setUserDetailObj(userResponse.data);
-      setUserBlogs(blogResponse.data);
-      console.log(userResponse.data);
 
-
-      // setBlog(response.data[0]);
-      // const date = new Date(response.data[0].createdAt);
+      setUserDetailState(response.data.userDetail);
+      setUserBlogs(response.data.userBlogs);
+      setUserFollowersState(response.data.userFollowers);
+      setUserFollowsToState(response.data.userFollowsTo);
+      setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      setIsLoading(false);
     }
   };
+
   const navigate = useNavigate();
   const onLogout = () => {
-    setUserDetailObj(null);
-    setUserDetailObj([]);
+    dispatch(userLogoutAction());
     document.cookie = `userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   // fetchUserBlog();
   // if (!userDetailObj) {
@@ -61,47 +60,58 @@ const Profile = () => {
   //     </Box>
   //   );
   // }
+
   return (
     <>
       <Navbar />
 
       <div className="w-full lg:w-11/12 xl:w-9/12 md:w-9/12 m-auto flex gap-20 mt-16">
-        {!userDetailObj ? (
-          <div className="px-4 py-6 w-[85%]">
-            <Box padding="6" boxShadow="lg" bg="white">
-              <SkeletonCircle size="10" />
-              <SkeletonText
-                mt="4"
-                noOfLines={4}
-                spacing="4"
-                skeletonHeight="2"
-              />
-            </Box>
-          </div>
-        ) : (
-          <div className="px-4 py-6 w-[85%]  ">
-            <div className="flex items-center gap-4">
-              <img
-                className="w-8 ml-2 rounded-3xl"
-                src={userDetailObj?.picture}
-                alt=""
-              />
-              <h2 className="text-lg font-bold">{userDetailObj?.name}</h2>
-              <h2 className="text-lg font-bold" > Followers {userDetailObj?.follower}</h2>
-              <button onClick={onLogout} class="border border-black rounded-2xl bg-white text-black font-bold py-1 px-3">
-                Logout
-              </button>
-            </div>
-            <div className="border-b-2 flex  py-4 gap-3 ">
-              <p className="border-b-2">All Blogs</p>
-            </div>
-            {userBlogs?.length == 0 ? (
-              <h1>No blog</h1>
+        <div className="px-4 py-6 w-[85%]  ">
+          <div className="flex items-center gap-4">
+            {
+              isLoading ? (<ProfileLoader/>) : (
+                <>
+                <img
+              className="w-8 ml-2 rounded-3xl"
+              src={userDetailState?.picture}
+              alt=""
+            />
+            <h2 className="text-lg font-bold">{userDetailState?.name}</h2>
+            <h2 className="text-lg font-bold">
+              {" "}
+              Followers {userFollowersState.length}
+            </h2>
+            {userId != userID ? (
+              ""
             ) : (
-              userBlogs?.map((ele) => <Card key={ele._id} {...ele} />)
-            )}
+              <button
+                onClick={onLogout}
+                class="border border-black rounded-2xl bg-white text-black font-bold py-1 px-3"
+              >
+                Logout
+                      </button>
+                    
+                  )}
+                  </>
+              )
+            }
+            
           </div>
-        )}
+          <div className="border-b-2 flex  py-4 gap-3 ">
+            <p className="border-b-2">All Blogs</p>
+          </div>
+          {isLoading ? (
+            <>
+              <HomeLoader />
+              <HomeLoader />
+              <HomeLoader />
+            </>
+          ) : userBlogs?.length == 0 ? (
+            <h1>No blog</h1>
+          ) : (
+            userBlogs?.map((ele) => <Card key={ele._id} {...ele} />)
+          )}
+        </div>
 
         <div className="w-1/2 border-l-2 hidden lg:block border-gray-200 pl-12  ">
           {/* <Sidebar /> */}

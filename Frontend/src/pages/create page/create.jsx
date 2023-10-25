@@ -1,97 +1,72 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../../components/navbar/navbar";
+import React, { useEffect, useRef, useState } from "react";
 import Navbar2 from "../../components/navbar/navbar2";
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import styles
+import axios from "axios";
+import Cookies from "js-cookie";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import {
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromHTML,
+} from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import CreateComponent from "./createComponent";
 const initialObj = {
-  title: "",
   content: "",
   category: "",
-  likeCounts: 0,
+  title: "",
 };
 const Create = () => {
   const [blogObj, setBlogObj] = useState(initialObj);
+  const [bannerImage, setBannerImg] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [userToken, setUserToken] = useState(null);
+  const tempBlogObj = useRef(blogObj);
 
   useEffect(() => {
     // Access the cookie by name
-    const userToken = Cookies.get('userToken');
+    const userToken = Cookies.get("userToken");
 
     if (userToken) {
       setUserToken(userToken);
-      console.log('Value from cookie:', userToken);
+      console.log("Value from cookie:", userToken);
     } else {
-      console.log('Cookie not found');
+      console.log("Cookie not found");
     }
   }, []);
 
-  const handleChange = (event) => {
-    event.preventDefault();
-    const { value, name } = event.target;
-    setBlogObj({ ...blogObj, [name]: value });
-  };
-
-  const handleContentChange = (content) => {
-    setBlogObj({ ...blogObj, content });
-  };
-
   const onPublish = async () => {
+    // console.log("onp", blogObj,bannerImage);
     const headers = {
-      'Authorization': `Bearer ${userToken}`,
+      Authorization: `Bearer ${userToken}`,
     };
+    const newObj = { ...blogObj, bannerImage };
+    console.log('new', newObj)
     try {
-      const newBlog = await axios.post('http://localhost:8080/blogs', blogObj, {
-        headers: headers
-      })
-      window.location.assign('/')
+      const newBlog = await axios.post("http://localhost:8080/blogs", newObj, {
+        headers: headers,
+      });
+      window.location.assign("/");
     } catch (error) {
       // Handle the error
     }
   };
+  
 
   return (
     <>
       <Navbar2 onPublish={onPublish} />
-      <div className="mt-16 md:w-[80%] lg:w-[70%] m-auto w-[90%] ">
-        <div className="flex mb-6 justify-between items-center">
-          <input
-            name="title"
-            type="text"
-            placeholder="Enter Title"
-            className="focus:border-transparent focus:outline-none font-bold tracking-wider"
-            onChange={handleChange}
-          />
-          <select
-            name="category"
-            id=""
-            className="border-transparent"
-            onChange={handleChange}
-          >
-            <option value="">Select Category</option>
-            <option value="tech">Tech</option>
-            <option value="sports">Sports</option>
-            <option value="business">Business</option>
-            <option value="economics">Economics</option>
-          </select>
-        </div>
-        <div>
-          <ReactQuill
-            value={blogObj.content}
-            onChange={handleContentChange}
-            modules={{
-              toolbar: [
-                [{ 'header': '1' }, { 'header': '2' }],
-                ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link'],
-                ['clean']
-              ],
-            }}
-          />
-        </div>
-      </div>
+      <CreateComponent
+        blogObj={blogObj}
+        setBlogObj={setBlogObj}
+        bannerImage={bannerImage}
+        setBannerImg={setBannerImg}
+        editorState={editorState}
+        setEditorState={setEditorState}
+      />
     </>
   );
 };
