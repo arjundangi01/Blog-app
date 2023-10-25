@@ -62,7 +62,12 @@ userRouter.get("/all", async (req, res) => {
   try {
     // console.log("token", userID)
     console.log('first')
-    const findUser = await UserModel.find({});
+    const { q } = req.query
+    const filter={}
+    if (q) {
+      filter["name"] = { $regex: new RegExp("^" + q, "i") };
+    }
+    const findUser = await UserModel.find(filter).limit(3);
 
     res.send(findUser);
   } catch (error) {

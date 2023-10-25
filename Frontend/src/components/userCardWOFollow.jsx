@@ -2,11 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserDetailAction } from "../../Redux/user_reducer/user.action";
+// import { getUserDetailAction } from "../../Redux/user_reducer/user.action";
 import { useToast } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
+const UserProfileCardWOFollow = ({ _id, email, name, picture, follower, isFollow }) => {
   const dispatch = useDispatch();
   const [isLoadingState, setIsLoadingState] = useState(false);
   const { isAuthenticated,isLoading, userId, userFollowersCount } = useSelector(
@@ -56,7 +56,7 @@ const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
         );
         console.log(userResponse);
       }
-      dispatch(getUserDetailAction());
+    //   dispatch(getUserDetailAction());
       setIsLoadingState(false);
     } catch (error) {
       console.log(error);
@@ -64,7 +64,7 @@ const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
     }
   };
   return (
-    <div className="flex justify-between w-[100%] mb-2">
+    <div className="flex justify-between w-[100%] mb-2 cursor-pointer">
       <div>
         <Link to={`/profile/${_id}`}>
           <img className="w-7 rounded-2xl " src={picture} alt="" />
@@ -74,26 +74,10 @@ const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
         <p>{name}</p>
       </div>
       <div>
-        {isLoadingState || isLoading ? (
-          <button
-            onClick={doFollow}
-            className={`border py-1 text-sm px-3  rounded-2xl bg-white text-black `}
-          >
-            loading..
-          </button>
-        ) : (
-          <button
-            onClick={doFollow}
-            className={`border border-black rounded-2xl py-1 text-sm px-3 ${
-              isFollow ? "bg-black text-white" : "bg-white text-black"
-            } `}
-          >
-            {isFollow ? "Following" : "Follow"}
-          </button>
-        )}
+        
       </div>
     </div>
   );
 };
 
-export default UserProfileCard;
+export default UserProfileCardWOFollow;

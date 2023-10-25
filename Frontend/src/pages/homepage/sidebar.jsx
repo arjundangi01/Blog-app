@@ -11,7 +11,7 @@ const Sidebar = () => {
   const {
     isAuthenticated,
     userDetail,
-  
+
     userBlogs,
     userId,
     userFollowsTo,
@@ -21,7 +21,7 @@ const Sidebar = () => {
     fetchUserData();
   }, []);
   const fetchUserData = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     console.log("sidebar", process.env.REACT_APP_BASE_URL);
     try {
       const response = await axios.get(
@@ -29,11 +29,9 @@ const Sidebar = () => {
       );
       console.log("sidebar", response);
       setUsers(response.data);
-    setIsLoading(false)
-
+      setIsLoading(false);
     } catch (error) {
-    setIsLoading(false)
-
+      setIsLoading(false);
     }
   };
   return (
@@ -48,19 +46,31 @@ const Sidebar = () => {
         <h1 className="mb-4 font-medium ">Who to Follow</h1>
         {isLoading ? (
           <>
-          <ProfileLoader />
-          <ProfileLoader />
-          <ProfileLoader />
+            <div>
+              {" "}
+              <ProfileLoader />
+            </div>
+            <div>
+              {" "}
+              <ProfileLoader />
+            </div>
+            <div>
+              {" "}
+              <ProfileLoader />
+            </div>
           </>
-          
         ) : (
           users.map((ele) => {
             // Check if ele.id is not equal to 1, and only render the UserProfileCard in that case
             if (ele._id !== userId) {
-              if (userFollowsTo.includes(ele._id)) {  
-                return <UserProfileCard {...ele} isFollow={true} />;
+              if (userFollowsTo.includes(ele._id)) {
+                return <div className="sm:w-[60%] lg:w-[65%]  xl:w-[55%]" >
+                   <UserProfileCard {...ele} isFollow={true} />
+                </div>
               } else {
-                return <UserProfileCard {...ele} isFollow={false} />;
+                return <div className="sm:w-[60%] lg:w-[65%]  xl:w-[55%]" >
+                   <UserProfileCard {...ele} isFollow={false} />
+                </div>;
               }
             }
             return null; // Return null for users with ele.id equal to 1 (or any other condition you want to handle)

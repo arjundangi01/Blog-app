@@ -19,7 +19,7 @@ import {
 
 const LikeShare = () => {
   return (
-    <div className="border-b-2 border-t-2 flex py-3 px-3 items-center justify-between mt-4 relative">
+    <div className="border-b-2 border-t-2 flex py-3 my-6 px-3 items-center justify-between mt-4 relative">
       <div className="relative">
         <Popover placement="top-start">
           <PopoverTrigger>
@@ -39,9 +39,9 @@ const LikeShare = () => {
         </Popover>
       </div>
       <div className="flex gap-6 items-center">
-        <BsBookmark className="text-2xl" />
-        <FiShare className="text-2xl" />
-        <BsThreeDots className="text-2xl" />
+        <BsBookmark className="text-xl" />
+        <FiShare className="text-xl" />
+        <BsThreeDots className="text-xl" />
       </div>
     </div>
   );

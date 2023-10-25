@@ -68,10 +68,10 @@ const Read = () => {
         <div>
           <div className=" ">
             {isLoadingState ? (
-              <BlogREadLoader/>
+              <BlogREadLoader />
             ) : (
               <ReactMarkdown
-                className="text-base lg:text-lg font-medium tracking-[0.02em] prose-p:text-red-400 text-lightGray"
+                className="text-base w-full lg:text-lg font-medium tracking-[0.02em] prose-p:text-red-400 text-lightGray"
                 children={blog?.content}
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
