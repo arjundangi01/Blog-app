@@ -9,9 +9,8 @@ import { Link } from "react-router-dom";
 const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
   const dispatch = useDispatch();
   const [isLoadingState, setIsLoadingState] = useState(false);
-  const { isAuthenticated,isLoading, userId, userFollowersCount } = useSelector(
-    (store) => store.userReducer
-  );
+  const { isAuthenticated, isLoading, userId, userFollowersCount } =
+    useSelector((store) => store.userReducer);
   const toast = useToast();
   const toastFunction = () => {
     toast({

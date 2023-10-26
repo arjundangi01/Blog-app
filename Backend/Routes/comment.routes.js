@@ -5,48 +5,36 @@ const jwt = require("jsonwebtoken");
 const { BlogModel } = require("../models/blog.model");
 const { CommentsModel } = require("../models/comments.model");
 const { UserModel } = require("../models/User.model");
+const jwtVerify = require("../middlewares/jwtverify");
 
 const commentRouter = express.Router();
 
-commentRouter.post("/:token", async (req, res) => {
+commentRouter.post("/", jwtVerify, async (req, res) => {
   try {
-    const { token } = req.params;
-     // input --  {text : "", blogId: ""}
+    const userId = req.userID;
     const input = req.body;
-    const { blogId } = input;
-    // console.log(token, input);
-    jwt.verify(token, "secretKey", async function (err, decoded) {
-      // console.log("dec", decoded.userId);
-      if (err) {
-        res.status(400).send("Please Login First");
+    const { blogId, text } = input;
+    const blog = await BlogModel.findOne({ _id: blogId });
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    // console.log(blog)
+    // console.log(blog.commentsCount)
+    let count = blog.commentsCount + +1;
 
-      } else {
-        const blog = await BlogModel.findOne({ _id: blogId });
-        if (!blog) {
-          return res.status(404).json({ message: "Blog not found" });
-        }
-        // console.log(blog)
-        // console.log(blog.commentsCount)
-        let count = blog.commentsCount + +1;
-        await BlogModel.updateOne({ _id: blogId }, { commentsCount: count });
-        //  blogId
-        // userId
-        // input -- comment text input = {text : "nice",blogId: }
+    const user = await UserModel.findOne({ _id: userId });
 
-        const user = await UserModel.findOne({ _id: decoded.userId });
+    const newObj = {
+      ...input,
+      user: {
+        userId, userName: user.name
+      },
+    };
+    await CommentsModel.create(newObj);
+    await BlogModel.updateOne({ _id: blogId }, { commentsCount: count });
+    console.log(newObj);
+    res.send("comment added");
 
-        // in input we are having { commentText: , blogId: } , so we are creating newObj by tagging userObj
-        const newObj = {
-          ...input,
-          user: { UserId: user.id, userName: user.userName },
-
-        };
-       
-        // console.log("newObj",newObj)
-        await CommentsModel.create(newObj);
-        res.send("comment added");
-      }
-    });
   } catch (error) {
     console.log(error);
   }

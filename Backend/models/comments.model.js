@@ -4,7 +4,7 @@ const commentSchema = mongoose.Schema(
   {
     text: String,
     user: {
-      UserId: String,
+      userId: String,
       userName: String,
     },
     blogId: String

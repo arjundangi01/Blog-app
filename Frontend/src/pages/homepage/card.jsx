@@ -7,6 +7,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import DOMPurify from "dompurify";
+import { FaRegComment } from "react-icons/fa";
+
 const Card = ({
   author,
   category,
@@ -15,6 +17,7 @@ const Card = ({
   createdAt,
   _id,
   bannerImage,
+  commentsCount,
 }) => {
   // Create a Date object from the timestamp
   console.log("author", author);
@@ -50,12 +53,8 @@ const Card = ({
               {/* <p className="line-clamp-3">{content}</p> */}
             </div>
           </div>
-          <div className="max-w-[150px] w-[40%] h-[100%] max-h-[100%] " >
-            <img
-              src={bannerImage}
-              alt=""
-              className="w-['100%'] object-cover"
-            />
+          <div className="max-w-[150px] w-[40%] h-[100%] max-h-[100%] ">
+            <img src={bannerImage} alt="" className="w-['100%'] object-cover" />
           </div>
           {/* <img src={bannerImage} alt="" className="w-1/4 mh-[50%] min-h-[50%] " /> */}
         </div>
@@ -68,8 +67,13 @@ const Card = ({
         <div className="flex items-center gap-3">
           <p>
             {" "}
-            <BsBookmark />{" "}
+            <BsBookmark />
           </p>
+          <p className="flex items-center gap-1" >
+            {" "}
+            <FaRegComment />{commentsCount}
+          </p>
+          
           <p>
             {" "}
             <BsThreeDots />{" "}

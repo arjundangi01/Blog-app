@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/navbar";
-import LikeShare from "./likeShare";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -8,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import DOMPurify from "dompurify";
 import BlogREadLoader from "../../components/blogreadLoader";
+import LikeShare from "./likeShare";
 
 const Read = () => {
   // ... (existing code)
@@ -60,7 +60,7 @@ const Read = () => {
           </div>
         </div>
 
-        <LikeShare />
+        <LikeShare blogId={blogID} commentsCount={blog?.commentsCount} />
 
         <div>
           <img src="" alt="" />
@@ -80,7 +80,8 @@ const Read = () => {
             )}
           </div>
         </div>
-        <LikeShare />
+        <LikeShare blogId={blogID} commentsCount={blog?.commentsCount} />
+
 
         {/* suggestions */}
         <div></div>
