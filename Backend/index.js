@@ -20,13 +20,7 @@ app.use(cookieParser());
 
 app.use(express.json());
 app.use(cors());
-app.use(
-  session({
-    secret: "your-secret-key",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+
 
 app.get("/", (req, res) => {
   res.send("welcome");
@@ -53,14 +47,14 @@ app.get(
   }),
   async function (req, res) {
     const user = req.user;
-    const findUser = await UserModel.findOne({email:user.email});
+    const findUser = await UserModel.findOne({email:user.email,google:true});
     if (findUser) {
       console.log("findUser",findUser)
      
       var token = jwt.sign({ userID: findUser._id }, "secretKey");
       res.cookie("userToken", token);
     } else {
-      const newUser = await UserModel.create(user);
+      const newUser = await UserModel.create({...user,google:true});
       console.log("newUser",newUser)
 
       var token = jwt.sign({ userID: newUser._id }, "secretKey");

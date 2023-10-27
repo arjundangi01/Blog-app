@@ -84,7 +84,7 @@ const PopoverComponent = () => {
           </div>
         </PopoverBody>
         {/* -------- */}
-        <PopoverHeader fontWeight="semibold">Topics</PopoverHeader>
+        {/* <PopoverHeader fontWeight="semibold">Topics</PopoverHeader>
         <PopoverArrow />
 
         <PopoverBody>
@@ -93,7 +93,7 @@ const PopoverComponent = () => {
             <ProfileLoader />
             <ProfileLoader />
           </div>
-        </PopoverBody>
+        </PopoverBody> */}
       </PopoverContent>
     </Popover>
   );

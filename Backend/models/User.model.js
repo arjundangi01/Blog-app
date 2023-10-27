@@ -2,15 +2,20 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema(
   {
-    sub: String,
     name: String,
-    given_name: String,
-    family_name: String,
-    picture: String,
+    picture: {
+      type: String,
+      default: "https://cdn-icons-png.flaticon.com/512/8344/8344923.png",
+    },
     email: String,
     follower: {
       type: Number,
-      default:0
+      default: 0,
+    },
+    password: String,
+    google: {
+      type: Boolean,
+      default:false
     }
   },
   {
@@ -24,4 +29,4 @@ const userFollowSchema = mongoose.Schema({
 
 const UserModel = mongoose.model("user", userSchema);
 const UserFollowModel = mongoose.model("userFollow", userFollowSchema);
-module.exports = { UserModel,UserFollowModel };
+module.exports = { UserModel, UserFollowModel };
