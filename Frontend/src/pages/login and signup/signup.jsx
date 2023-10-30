@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar/navbar";
 import { RxCross1 } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FormControl, FormHelperText, FormLabel, Input } from "@chakra-ui/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 const Signup = () => {
-  const [userObj,setUserObj] = useState({})
+  const [userObj, setUserObj] = useState({})
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -20,7 +21,8 @@ const Signup = () => {
       if (response.data.message =='Email is Already Registered') {
          return
       }
-      Cookies.set('userToken', response.data.token, );
+      Cookies.set('userToken', response.data.token,);
+      navigate('/')
 
     } catch (error) {
       console.log(error)

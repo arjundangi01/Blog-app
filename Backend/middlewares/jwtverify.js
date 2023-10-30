@@ -3,6 +3,8 @@ const { UserModel } = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const jwtVerify = (req, res, next) => {
   const  token  = req.headers.authorization?.split(" ")[1]
+  const token2 = req.cookies.appToken
+  console.log('token2',token2)
   // console.log('token', token)
   // console.log(req.url)
 

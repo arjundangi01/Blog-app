@@ -14,6 +14,7 @@ import {
 } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import CreateComponent from "./createComponent";
+import { useToast } from "@chakra-ui/react";
 const initialObj = {
   content: "",
   category: "",
@@ -25,7 +26,8 @@ const Create = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [userToken, setUserToken] = useState(null);
   const tempBlogObj = useRef(blogObj);
-
+  const toast = useToast();
+ 
   useEffect(() => {
     // Access the cookie by name
     const userToken = Cookies.get("userToken");
@@ -37,6 +39,15 @@ const Create = () => {
       console.log("Cookie not found");
     }
   }, []);
+  const toastFunction = () => {
+    toast({
+      title: "Error.",
+      description: "Please Fill all required Filled.",
+      status: "error",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   const onPublish = async () => {
     // console.log("onp", blogObj,bannerImage);
@@ -45,6 +56,10 @@ const Create = () => {
     };
     const newObj = { ...blogObj, bannerImage };
     console.log('new', newObj)
+    if (blogObj.category == '' || blogObj.title == '' || blogObj.content == '') {
+      toastFunction()
+      return
+    }
     try {
       const newBlog = await axios.post("http://localhost:8080/blogs", newObj, {
         headers: headers,

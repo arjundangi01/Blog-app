@@ -24,7 +24,7 @@ const Read = () => {
     setIsLoadingState(true);
     try {
       const response = await axios.get(
-        `http://localhost:8080/blogs?q=${blogID}`
+        `${process.env.REACT_APP_BASE_URL}/blogs?q=${blogID}`
       );
       // console.log(response.data[0]);
       setBlog(response.data[0]);

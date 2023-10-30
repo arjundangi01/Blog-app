@@ -70,8 +70,8 @@ const Home = () => {
     <>
       <Navbar />
       <div className="w-full relative lg:w-11/12 xl:w-9/12 md:w-9/12 m-auto flex gap-20 mt-16">
-        <div className="px-4 w-[90%] lg:w-[60%] ">
-          <div className="border-b-2 flex  py-4 gap-3 cursor-pointer">
+        <div className="px-4 w-[100%] lg:w-[60%] ">
+          <div className="border-b-2 flex  py-4 gap-2 sm:gap-3 cursor-pointer">
             <p
               onClick={() => setFilter("")}
               className={` ${filter ? "" : "border-b-2"} `}

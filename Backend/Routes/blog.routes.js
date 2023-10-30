@@ -21,6 +21,8 @@ blogRouter.get("/", async (req, res) => {
     // console.log(filter)
     filterObj['category'] = filter;
   }
+  // const token2 = req.cookies.appToken
+  // console.log('token2',token2)
   if (user) {
     const data = await BlogModel.find({ "author.authorId": user });
     return res.send(data);

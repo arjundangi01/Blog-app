@@ -53,7 +53,7 @@ const Card = ({
               {/* <p className="line-clamp-3">{content}</p> */}
             </div>
           </div>
-          <div className="max-w-[150px] w-[40%] h-[100%] max-h-[100%] ">
+          <div className="max-w-[150px] w-[40%] h-[100%] max-h-[100%] min-w-[100px] md:min-w-[220px]">
             <img src={bannerImage} alt="" className="w-['100%'] object-cover" />
           </div>
           {/* <img src={bannerImage} alt="" className="w-1/4 mh-[50%] min-h-[50%] " /> */}

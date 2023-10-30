@@ -122,17 +122,17 @@ userRouter.post("/login", async (req, res) => {
     const user = await UserModel.findOne({ email , google:false });
     // console.log(user)
     if (user) {
-      bcrypt.compare(password, user.password, function (err, result) {
+      bcrypt.compare(password, user.password, async function (err, result) {
         // result == true
         if (result) {
           const userObj = {
             userID: user._id,
           };
-          //  {foo:'baa'}
-          // console.log(userObj);
-          console.log(process.env.JWT_SECRET_KEY);
-          const token = jwt.sign(userObj, "secretKey");
-          res.send({ message: "Login Successful", token });
+          
+          const token = await jwt.sign(userObj, "secretKey");
+          // res.cookie("userToken", token);
+          // res.redirect("http://localhost:3000/");
+          res.send({ message:"User Login  Successful", token})
         } else {
           res.send("Entered Wrong Detail");
         }
