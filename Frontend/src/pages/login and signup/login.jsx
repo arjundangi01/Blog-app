@@ -7,12 +7,14 @@ import {
   FormHelperText,
   FormLabel,
   Input,
+  useToast
 } from "@chakra-ui/react";
 import axios from "axios";
 import Cookies from "js-cookie";
 const Login = () => {
   const [userObj, setUserObj] = useState({});
   const navigate = useNavigate();
+  const toast = useToast();
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -27,9 +29,12 @@ const Login = () => {
       );
       console.log(response);
       if (response.data.message == "Email is not Registered") {
+        toastFunction("Email is not Registered")
+
         return;
       }
       if (response.data.message == "Entered Wrong Detail") {
+        toastFunction("Entered Wrong Detail")
         return;
       }
       Cookies.set("userToken", response.data.token);
@@ -38,8 +43,17 @@ const Login = () => {
       console.log(error);
     }
   };
+  const toastFunction = (msg) => {
+    toast({
+      title: "Error.",
+      description: msg,
+      status: "error",
+      duration: 10000,
+      isClosable: true,
+    });
+  };
   return (
-    <div className="flex flex-col gap-y-8 lg:w-[40%] m-auto items-center py-14 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg ">
+    <div className="flex flex-col  w-[100%] sm:w-[80%]  gap-y-8 lg:w-[40%] m-auto items-center py-14 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg ">
       <h1 className="text-3xl mb-2 ">Welcome Back.</h1>
       <div className="flex flex-col gap-y-3 items-center">
         <div>
