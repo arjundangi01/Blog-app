@@ -37,7 +37,7 @@ const Card = ({ author, category, content, title, createdAt, _id,bannerImage }) 
     window.location.reload();
   };
   const { userID } = useParams();
-
+// 
   console.log('idss', userID, userId)
   const sanitizedContent = DOMPurify.sanitize(content, {
     FORBID_TAGS: ["img"],
@@ -87,7 +87,7 @@ const Card = ({ author, category, content, title, createdAt, _id,bannerImage }) 
                   <div className="flex-col  cursor-pointer">
                     
                     {userId != userID ? (
-                      <p className="cursor-pointer my-2 ">view</p>
+                      <Link to={`/blog/${_id}`} className="cursor-pointer my-2 ">view</Link>
                     ) : (
                       <>
                         <Link to={`/update/${_id}`}>
