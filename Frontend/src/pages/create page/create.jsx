@@ -61,7 +61,7 @@ const Create = () => {
       return
     }
     try {
-      const newBlog = await axios.post("http://localhost:8080/blogs", newObj, {
+      const newBlog = await axios.post( `${process.env.REACT_APP_BASE_URL}/blogs`, newObj, {
         headers: headers,
       });
       window.location.assign("/");

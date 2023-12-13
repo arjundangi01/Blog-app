@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userLogoutAction } from "../../Redux/user_reducer/user.action";
 import HomeLoader from "../homepage/homeloader";
 import ProfileLoader from "../../components/profileLoader";
+import Sidebar from "./sidebar";
 
 const Profile = () => {
   const [userDetailState, setUserDetailState] = useState(null);
@@ -68,34 +69,32 @@ const Profile = () => {
       <div className="w-full lg:w-11/12 xl:w-9/12 md:w-9/12 m-auto flex gap-20 mt-16">
         <div className="px-4 py-6 w-[85%]  ">
           <div className="flex items-center gap-4">
-            {
-              isLoading ? (<ProfileLoader/>) : (
-                <>
-                <img
-              className="w-8 ml-2 rounded-3xl"
-              src={userDetailState?.picture}
-              alt=""
-            />
-            <h2 className="text-lg font-bold">{userDetailState?.name}</h2>
-            <h2 className="text-lg font-bold">
-              {" "}
-              Followers {userFollowersState.length}
-            </h2>
-            {userId != userID ? (
-              ""
+            {isLoading ? (
+              <ProfileLoader />
             ) : (
-              <button
-                onClick={onLogout}
-                class="border border-black rounded-2xl bg-white text-black font-bold py-1 px-3"
-              >
-                Logout
-                      </button>
-                    
-                  )}
-                  </>
-              )
-            }
-            
+              <>
+                <img
+                  className="w-8 ml-2 rounded-3xl"
+                  src={userDetailState?.picture}
+                  alt=""
+                />
+                <h2 className="text-lg font-bold">{userDetailState?.name}</h2>
+                <h2 className="text-lg font-bold">
+                  {" "}
+                  Followers {userFollowersState.length}
+                </h2>
+                {userId != userID ? (
+                  ""
+                ) : (
+                  <button
+                    onClick={onLogout}
+                    class="border border-black rounded-2xl bg-white text-black font-bold py-1 px-3"
+                  >
+                    Logout
+                  </button>
+                )}
+              </>
+            )}
           </div>
           <div className="border-b-2 flex  py-4 gap-3 ">
             <p className="border-b-2">All Blogs</p>
@@ -114,7 +113,11 @@ const Profile = () => {
         </div>
 
         <div className="w-1/2 border-l-2 hidden lg:block border-gray-200 pl-12  ">
-          {/* <Sidebar /> */}
+          <Sidebar
+            userBlogs={userBlogs}
+            userFollowsToState={userFollowsToState}
+            userDetailState={userDetailState}
+          />
         </div>
       </div>
     </>
