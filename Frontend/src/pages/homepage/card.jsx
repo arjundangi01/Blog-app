@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import DOMPurify from "dompurify";
 import { FaRegComment } from "react-icons/fa";
+import { BiLike } from "react-icons/bi";
 
 const Card = ({
   author,
@@ -18,6 +19,7 @@ const Card = ({
   _id,
   bannerImage,
   commentsCount,
+  likesCount
 }) => {
   // Create a Date object from the timestamp
   // console.log("author", author);
@@ -72,6 +74,10 @@ const Card = ({
           <p className="flex items-center gap-1" >
             {" "}
             <FaRegComment />{commentsCount}
+          </p>
+          <p className="flex items-center gap-1" >
+            {" "}
+            <BiLike />{likesCount}
           </p>
           
           <p>

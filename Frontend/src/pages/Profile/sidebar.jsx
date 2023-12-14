@@ -3,6 +3,8 @@ import { uploadImage } from "../../config/firebase";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Spinner } from "@chakra-ui/react";
+import { getUserDetailAction } from "../../Redux/user_reducer/user.action";
+import { useDispatch } from "react-redux";
 
 const Sidebar = ({
   userDetailState,
@@ -13,13 +15,17 @@ const Sidebar = ({
   fetchUserDetail,
 }) => {
   const [isImageUploadLoading, setImageUploadLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleImageChange = (e) => {
+    if ( ! e.target.files[0]) {
+      return
+    }
     setImageUploadLoading(true);
     // let image = e.target.files[0];
     uploadImage(e.target.files[0])
       .then((downloadURL) => {
-        setImageUploadLoading(false);
+       
         updateProfile(downloadURL);
       })
       .catch((err) => {
@@ -42,8 +48,12 @@ const Sidebar = ({
         }
       );
       console.log(res);
-      fetchUserDetail(userID);
+      await fetchUserDetail(userID);      
+      setImageUploadLoading(false);
+      dispatch(getUserDetailAction());
     } catch (error) {
+      setImageUploadLoading(false);
+
       console.log(error);
     }
   };

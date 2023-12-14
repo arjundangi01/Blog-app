@@ -4,6 +4,8 @@ import { BsBookmark } from "react-icons/bs";
 import { FiShare } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import { BiLike } from "react-icons/bi";
+import { Spinner } from "@chakra-ui/react";
+
 import {
   Popover,
   PopoverTrigger,
@@ -57,6 +59,9 @@ const LikeShare = ({ blogId, commentsCount, fetchBlog, likesCount, likes }) => {
       setPopoverOpen(false);
       return;
     }
+    if (isLikeLoading) {
+      return
+    }
     const userToken = Cookies.get("userToken");
     const headers = {
       Authorization: `Bearer ${userToken}`,
@@ -90,18 +95,35 @@ const LikeShare = ({ blogId, commentsCount, fetchBlog, likesCount, likes }) => {
         toastFunction();
         return;
       }
+      if (isLikeLoading) {
+        return;
+      }
+      setIsLikeLoading(true);
       const userToken = Cookies.get("userToken");
       const headers = {
         Authorization: `Bearer ${userToken}`,
       };
-      const res = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/like/add/${blogId}`,
-        {},
-        { headers: headers }
-      );
-      console.log(res);
-      fetchBlog(blogId);
+
+      if (likes.includes(userId)) {
+        const res = await axios.delete(
+          `${process.env.REACT_APP_BASE_URL}/like/delete/${blogId}`,
+
+          { headers: headers }
+        );
+        console.log(res);
+      } else {
+        const res = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/like/add/${blogId}`,
+          {},
+          { headers: headers }
+        );
+        console.log(res);
+      }
+      await fetchBlog(blogId);
+      setIsLikeLoading(false);
     } catch (error) {
+      setIsLikeLoading(false);
+
       console.log(error);
     }
   };
@@ -123,6 +145,15 @@ const LikeShare = ({ blogId, commentsCount, fetchBlog, likesCount, likes }) => {
                 } text-2xl`}
               />
               <Text>{likesCount}</Text>
+              {isLikeLoading && (
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="sm"
+                />
+              )}
             </HStack>
           </PopoverTrigger>
 
