@@ -10,7 +10,7 @@ const initialState = {
   isLoading: false,
   isError: false,
   userDetail: {},
-  userId: "",
+  userId: null,
   userName: "",
   userEmail: "",
   userBlogs: [],

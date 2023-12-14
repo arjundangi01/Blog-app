@@ -124,7 +124,7 @@ const Home = () => {
             </InfiniteScroll>
           )}
         </div>
-        <div className="w-[32%] fixed right-20 bg-white border-l-2 hidden lg:block border-gray-200 pl-12  ">
+        <div className="w-[32%] fixed right-20 bg-white border-l-2 h-full hidden lg:block border-gray-200 pl-12  ">
           <Sidebar />
          
         </div>

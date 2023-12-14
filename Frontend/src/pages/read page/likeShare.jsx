@@ -3,6 +3,7 @@ import { FaRegComment } from "react-icons/fa";
 import { BsBookmark } from "react-icons/bs";
 import { FiShare } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
+import { BiLike } from "react-icons/bi";
 import {
   Popover,
   PopoverTrigger,
@@ -21,17 +22,21 @@ import {
   Flex,
   HStack,
 } from "@chakra-ui/react";
+import { BiSolidLike } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 
 import axios from "axios";
 import { useRef } from "react";
 
-const LikeShare = ({ blogId, commentsCount }) => {
+const LikeShare = ({ blogId, commentsCount, fetchBlog, likesCount, likes }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
   const { isAuthenticated, userId, userFollowersCount } = useSelector(
     (store) => store.userReducer
   );
+  console.log("first", likes);
   const toast = useToast();
   const [commentText, setCommentText] = useState("");
   const toastFunction = () => {
@@ -49,6 +54,7 @@ const LikeShare = ({ blogId, commentsCount }) => {
   const onAddComment = async () => {
     if (!isAuthenticated) {
       toastFunction();
+      setPopoverOpen(false);
       return;
     }
     const userToken = Cookies.get("userToken");
@@ -59,6 +65,7 @@ const LikeShare = ({ blogId, commentsCount }) => {
       setPopoverOpen(false);
       return;
     }
+    setIsCommentLoading(true);
     try {
       await axios.post(
         `${process.env.REACT_APP_BASE_URL}/comment`,
@@ -67,8 +74,33 @@ const LikeShare = ({ blogId, commentsCount }) => {
           headers: headers,
         }
       );
+      fetchBlog(blogId);
+      setIsCommentLoading(false);
       setPopoverOpen(false);
       setCommentText("");
+    } catch (error) {
+      setIsCommentLoading(false);
+
+      console.log(error);
+    }
+  };
+  const onLike = async () => {
+    try {
+      if (!isAuthenticated) {
+        toastFunction();
+        return;
+      }
+      const userToken = Cookies.get("userToken");
+      const headers = {
+        Authorization: `Bearer ${userToken}`,
+      };
+      const res = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/like/add/${blogId}`,
+        {},
+        { headers: headers }
+      );
+      console.log(res);
+      fetchBlog(blogId);
     } catch (error) {
       console.log(error);
     }
@@ -78,12 +110,19 @@ const LikeShare = ({ blogId, commentsCount }) => {
       <div className="relative">
         <Popover placement="top-start" isOpen={popoverOpen}>
           <PopoverTrigger>
-            <HStack spacing='10px'  >
+            <HStack spacing="10px">
               <FaRegComment
                 onClick={() => setPopoverOpen(true)}
                 className="text-2xl"
               />
               <Text>{commentsCount}</Text>
+              <BiSolidLike
+                onClick={onLike}
+                className={`${
+                  likes.includes(userId) ? "text-green-500" : ""
+                } text-2xl`}
+              />
+              <Text>{likesCount}</Text>
             </HStack>
           </PopoverTrigger>
 
@@ -99,7 +138,13 @@ const LikeShare = ({ blogId, commentsCount }) => {
                 onChange={onChange}
                 value={commentText}
               />
-              <Button onClick={onAddComment}>ADD</Button>
+              <Button
+                isLoading={isCommentLoading}
+                disabled={isCommentLoading}
+                onClick={onAddComment}
+              >
+                ADD
+              </Button>
             </PopoverBody>
           </PopoverContent>
         </Popover>

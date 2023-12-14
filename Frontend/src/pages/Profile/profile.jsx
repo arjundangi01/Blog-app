@@ -27,9 +27,9 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserDetail(userID);
+    setIsLoading(true);
   }, [userID]);
   const fetchUserDetail = async (userId) => {
-    setIsLoading(true);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user/one/${userId}`
@@ -106,7 +106,13 @@ const Profile = () => {
               <HomeLoader />
             </>
           ) : userBlogs?.length == 0 ? (
-            <h1>No blog</h1>
+            <>
+              <div className="w-full">
+                <div className="w-full text-center mt-8">
+                  <Link to="/create" className="border font-semibold py-3 px-3 border-green-500 rounded-lg" >Write Your First Blog</Link>
+                </div>
+              </div>
+            </>
           ) : (
             userBlogs?.map((ele) => <Card key={ele._id} {...ele} />)
           )}
@@ -114,6 +120,9 @@ const Profile = () => {
 
         <div className="w-1/2 border-l-2 hidden lg:block border-gray-200 pl-12  ">
           <Sidebar
+            fetchUserDetail={fetchUserDetail}
+            userId={userId}
+            userID={userID}
             userBlogs={userBlogs}
             userFollowsToState={userFollowsToState}
             userDetailState={userDetailState}

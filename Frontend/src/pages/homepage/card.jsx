@@ -20,7 +20,7 @@ const Card = ({
   commentsCount,
 }) => {
   // Create a Date object from the timestamp
-  console.log("author", author);
+  // console.log("author", author);
   const date = new Date(createdAt);
 
   // Get the day and month names
@@ -43,7 +43,7 @@ const Card = ({
         <div className="flex   mt-3 mb-3  justify-between">
           <div>
             <p className="font-bold text-lg ">{title}</p>
-            <div className="hidden lg:block  line-clamp-3  ">
+            <div className="hidden lg:block text-sm line-clamp-3  ">
               <ReactMarkdown
                 className="text-base line-clamp-3"
                 children={sanitizedContent}

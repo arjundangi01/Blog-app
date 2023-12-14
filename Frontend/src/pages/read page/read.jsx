@@ -14,21 +14,26 @@ const Read = () => {
   const [blog, setBlog] = useState();
   const [time, setTime] = useState({});
   const [isLoadingState, setIsLoadingState] = useState(false);
+  const [updated, setUpdated] = useState(false);
+  const [likes, setLikes] = useState([]);
 
   const { blogID } = useParams();
   useEffect(() => {
-    fetchBlog();
-  }, []);
-  // console.log(id)
-  const fetchBlog = async () => {
     setIsLoadingState(true);
+  }, []);
+  useEffect(() => {
+    fetchBlog(blogID);
+  }, [updated]);
+  // console.log(id)
+  const fetchBlog = async (id) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/blogs?q=${blogID}`
+        `${process.env.REACT_APP_BASE_URL}/blogs?q=${id}`
       );
-      // console.log(response.data[0]);
-      setBlog(response.data[0]);
-      const date = new Date(response.data[0].createdAt);
+      console.log('data',response.data);
+      setBlog(response.data.data[0]);
+      setLikes(response.data.allLikes)
+      const date = new Date(response.data.data[0].createdAt);
 
       // Get the day and month names
       const day = date.getDate();
@@ -60,7 +65,13 @@ const Read = () => {
           </div>
         </div>
 
-        <LikeShare blogId={blogID} commentsCount={blog?.commentsCount} />
+        <LikeShare
+          fetchBlog={fetchBlog}
+          blogId={blogID}
+          likesCount={blog?.likesCount}
+          commentsCount={blog?.commentsCount}
+          likes={likes}
+        />
 
         <div>
           <img src="" alt="" />
@@ -80,8 +91,13 @@ const Read = () => {
             )}
           </div>
         </div>
-        <LikeShare blogId={blogID} commentsCount={blog?.commentsCount} />
-
+        <LikeShare
+          fetchBlog={fetchBlog}
+          blogId={blogID}
+          likesCount={blog?.likesCount}
+          commentsCount={blog?.commentsCount}
+          likes={likes}
+        />
 
         {/* suggestions */}
         <div></div>
