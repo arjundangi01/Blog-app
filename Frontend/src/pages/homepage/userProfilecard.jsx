@@ -55,7 +55,7 @@ const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
         );
         console.log(userResponse);
       }
-      dispatch(getUserDetailAction());
+      await dispatch(getUserDetailAction());
       setIsLoadingState(false);
     } catch (error) {
       console.log(error);
@@ -73,7 +73,7 @@ const UserProfileCard = ({ _id, email, name, picture, follower, isFollow }) => {
         <p>{name}</p>
       </div>
       <div>
-        {isLoadingState || isLoading ? (
+        {isLoadingState ? (
           <button
             onClick={doFollow}
             className={`border py-1 text-sm px-3  rounded-2xl bg-white text-black `}
