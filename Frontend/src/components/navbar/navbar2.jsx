@@ -2,7 +2,8 @@ import React from "react";
 import logo from "../../assets/logo.png";
 import { BsPencilSquare } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const Navbar2 = ({ onPublish }) => {
+import { Button } from "@chakra-ui/react";
+const Navbar2 = ({ onPublish,isLoading }) => {
   
 
 
@@ -20,9 +21,12 @@ const Navbar2 = ({ onPublish }) => {
         <p>Draft in arjundangi</p>
       </div>
       <div className="flex gap-3 md:gap-7 ">
-        <button onClick={()=>{onPublish()}} className="border border-grey-500 py-1 sm:py-1 sm:px-2 px-1 rounded-lg bg-green-500 text-white">
+        <Button onClick={()=>{onPublish()}} colorScheme='green' isLoading={isLoading} >
+          Publish
+        </Button>
+        {/* <button  className="border border-grey-500 py-1 sm:py-1 sm:px-2 px-1 rounded-lg bg-green-500 text-white">
           publish
-        </button>
+        </button> */}
       </div>
     </nav>
   );

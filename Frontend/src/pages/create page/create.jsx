@@ -15,6 +15,7 @@ import {
 import draftToHtml from "draftjs-to-html";
 import CreateComponent from "./createComponent";
 import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 const initialObj = {
   content: "",
   category: "",
@@ -26,8 +27,9 @@ const Create = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [userToken, setUserToken] = useState(null);
   const tempBlogObj = useRef(blogObj);
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
- 
+  const navigate = useNavigate();
   useEffect(() => {
     // Access the cookie by name
     const userToken = Cookies.get("userToken");
@@ -50,30 +52,44 @@ const Create = () => {
   };
 
   const onPublish = async () => {
+    setIsLoading(true);
     // console.log("onp", blogObj,bannerImage);
     const headers = {
       Authorization: `Bearer ${userToken}`,
     };
     const newObj = { ...blogObj, bannerImage };
-    console.log('new', newObj)
-    if (blogObj.category == '' || blogObj.title == '' || blogObj.content == '') {
-      toastFunction()
-      return
+    console.log("new", newObj);
+    if (
+      blogObj.category == "" ||
+      blogObj.title == "" ||
+      blogObj.content == ""
+    ) {
+      toastFunction();
+      setIsLoading(false);
+
+      return;
     }
     try {
-      const newBlog = await axios.post( `${process.env.REACT_APP_BASE_URL}/blogs`, newObj, {
-        headers: headers,
-      });
-      window.location.assign("/");
+      const newBlog = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/blogs`,
+        newObj,
+        {
+          headers: headers,
+        }
+      );
+      setIsLoading(false);
+
+      navigate("/");
     } catch (error) {
+      setIsLoading(false);
+
       // Handle the error
     }
   };
-  
 
   return (
     <>
-      <Navbar2 onPublish={onPublish} />
+      <Navbar2 onPublish={onPublish} isLoading={isLoading} />
       <CreateComponent
         blogObj={blogObj}
         setBlogObj={setBlogObj}

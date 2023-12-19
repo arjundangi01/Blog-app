@@ -23,7 +23,7 @@ import rehypeRaw from "rehype-raw";
 import { useSelector } from "react-redux";
 import DOMPurify from "dompurify";
 import HomeLoader from "../homepage/homeloader";
-const Card = ({ author, category, content, title, createdAt, _id,bannerImage }) => {
+const Card = ({ author, category, content, title, createdAt, _id,bannerImage ,fetchUserDetail}) => {
   const date = new Date(createdAt);
   const { isAuthenticated, userDetail,  userId } = useSelector(
     (store) => store.userReducer
@@ -33,8 +33,8 @@ const Card = ({ author, category, content, title, createdAt, _id,bannerImage }) 
   const day = date.getDate();
   const month = date.toLocaleString("en-US", { month: "short" });
   const onDelete = async () => {
-    const response = await axios.delete(`http://localhost:8080/blogs/${_id}`);
-    window.location.reload();
+    const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/blogs/${_id}`);
+    fetchUserDetail(author?.authorId)
   };
   const { userID } = useParams();
 // 

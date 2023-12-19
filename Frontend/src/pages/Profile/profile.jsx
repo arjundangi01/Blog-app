@@ -30,6 +30,9 @@ const Profile = () => {
     setIsLoading(true);
   }, [userID]);
   const fetchUserDetail = async (userId) => {
+    if (!userId) {
+      return
+    }
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/user/one/${userId}`
@@ -114,7 +117,7 @@ const Profile = () => {
               </div>
             </>
           ) : (
-            userBlogs?.map((ele) => <Card key={ele._id} {...ele} />)
+            userBlogs?.map((ele) => <Card key={ele._id} {...ele} fetchUserDetail={fetchUserDetail} />)
           )}
         </div>
 

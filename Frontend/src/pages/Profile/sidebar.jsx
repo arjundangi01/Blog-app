@@ -61,7 +61,7 @@ const Sidebar = ({
     <main>
       <div className="mt-2">
         <div className="flex justify-between ">
-          <p className="font-semibold ">Your Profile</p>
+          <p className="font-semibold ">{userDetailState?.name } Profile</p>
           {isImageUploadLoading && (
             <Spinner
               thickness="4px"
@@ -94,18 +94,18 @@ const Sidebar = ({
             ""
           )}
         </div>
-        <div className="w-[40%] m-auto text-center">
+        <div className="w-[40%] m-auto text-center ">
           <img
-            className="w-[100%] rounded-[50%] object-cover min-w-[100%] "
+            className="min-h-[160px] max-h-[160px] rounded-[50%] object-cover min-w-[100%] "
             src={userDetailState?.picture}
             alt=""
           />
           <p className="font-bold text-lg mt-2">{userDetailState?.name}</p>
         </div>
         <div className="flex justify-between mt-5 cursor-pointer">
-          <p> Followers {userDetailState?.follower} </p>
-          <p> Following {userFollowsToState?.length} </p>
-          <p> Total Blogs {userBlogs?.length}</p>
+          <p className="font-semibold" > Followers {userDetailState?.follower} </p>
+          <p className="font-semibold" > Following {userFollowsToState?.length} </p>
+          <p className="font-semibold" > Total Blogs {userBlogs?.length}</p>
         </div>
       </div>
     </main>
