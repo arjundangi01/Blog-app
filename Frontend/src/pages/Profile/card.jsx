@@ -32,6 +32,7 @@ const Card = ({ author, category, content, title, createdAt, _id,bannerImage ,fe
   // Get the day and month names
   // Get the day and month names
   // Get the day and month names
+  // Get the day and month names
   const day = date.getDate();
   const month = date.toLocaleString("en-US", { month: "short" });
   const onDelete = async () => {
