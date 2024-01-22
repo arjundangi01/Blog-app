@@ -11,15 +11,20 @@ const cookie = require("cookie");
 const app = express();
 const session = require("express-session");
 const jwt = require('jsonwebtoken');
+require("dotenv").config();
 const { UserModel } = require("./models/User.model");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-
+const PORT = process.env.PORT;
 app.use(cookieParser());
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://travelious-project.netlify.app","https://comforting-taffy-d07f72.netlify.app"],
+  })
+);
 
 
 app.get("/", (req, res) => {
@@ -66,7 +71,7 @@ app.get(
   }
 );
 
-app.listen(8080, async () => {
+app.listen(PORT, async () => {
   try {
     await connection;
   } catch (error) {

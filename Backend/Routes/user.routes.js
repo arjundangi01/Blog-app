@@ -12,7 +12,7 @@ const userRouter = express.Router();
 userRouter.get("/", jwtVerify, async (req, res) => {
   try {
     const userID = req.userID;
-    console.log("token", userID)
+    console.log("token", userID);
     const findUser = await UserModel.findOne({ _id: userID });
     const findUserBlogs = await BlogModel.find({ "author.authorId": userID });
     const findUserFollowers = await UserFollowModel.find(
@@ -85,6 +85,7 @@ userRouter.get("/all", async (req, res) => {
     console.log(error);
   }
 });
+
 userRouter.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -94,21 +95,21 @@ userRouter.post("/signup", async (req, res) => {
     });
     if (CheckForUserAlreadyRegistered) {
       res.send({ message: "Email is Already Registered" });
-      return
+      return;
     }
 
     bcrypt.hash(password, 4, async function (err, hash) {
       // Store hash in your password DB.
-     const newUser =  await UserModel.create({ name, email, password: hash });
-     const userObj = {
-      userID: newUser._id,
+      const newUser = await UserModel.create({ name, email, password: hash });
+      const userObj = {
+        userID: newUser._id,
       };
       const token = jwt.sign(userObj, "secretKey");
       // res.cookie("userToken", token, {
       //   httpOnly: false,
       //   sameSite: "lax",
       // });
-      res.send({ message:"User Registered Successful", token})
+      res.send({ message: "User Registered Successful", token });
     });
   } catch (error) {
     console.log(error);
@@ -119,29 +120,44 @@ userRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await UserModel.findOne({ email , google:false });
+    const user = await UserModel.findOne({ email, google: false });
     // console.log(user)
     if (user) {
-      bcrypt.compare(password, user.password, async function (err, result) {
+      bcrypt.compare(password, user.password, function (err, result) {
         // result == true
         if (result) {
           const userObj = {
             userID: user._id,
           };
-          
-          const token = await jwt.sign(userObj, "secretKey");
-          // res.cookie("userToken", token);
-          // res.redirect("http://localhost:3000/");
-          res.send({ message:"User Login  Successful", token})
+          //  {foo:'baa'}
+          // console.log(userObj);
+          console.log(process.env.JWT_SECRET_KEY);
+          const token = jwt.sign(userObj, "secretKey");
+          res.send({ message: "Login Successful", token });
         } else {
-          res.send("Entered Wrong Detail");
+          res.send({ message: "Entered Wrong Detail" });
         }
       });
     } else {
-      res.send("Email is not Registered");
+      res.send({ message: "Email is not Registered" });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
+  }
+});
+
+userRouter.patch("/profile", jwtVerify, async (req, res) => {
+  const { picture } = req.body;
+  const userID = req.userID;
+
+  try {
+    const user = await UserModel.updateOne({ _id: userID }, { $set: { "picture": picture } });
+    const blogs = await BlogModel.updateMany({ "author.authorId": userID }, { $set: { "author.picture": picture } }) ;
+    // user.picture = picture;
+    // await user.save();
+    res.send({ message: "Profile Picture updated" });
+  } catch (error) {
+    console.log(error);
   }
 });
 

@@ -5,46 +5,46 @@ const jwt = require("jsonwebtoken");
 const { BlogModel } = require("../models/blog.model");
 const { UserModel } = require("../models/User.model");
 const { LikeModel } = require("../models/like.model");
+const jwtVerify = require("../middlewares/jwtverify");
 
 const likeRouter = express.Router();
 
-likeRouter.post("/:token", (req, res) => {
+likeRouter.post("/add/:blogId", jwtVerify, async (req, res) => {
   try {
-    // in input we are getting 
-    // {
-    //   blogId
-    // }
-    const input = req.body;
-    const { token } = req.params;
-    const { blogId } = input;
-    jwt.verify(token, "secretKey", async function (err, decoded) {
-      // console.log(decoded.foo);
-      if (err) {
-        res.status(400).send("Please Login First");
-      } else {
-        //getting blog from blogModel
-        const blog = await BlogModel.findOne({ _id: blogId });
-        if (!blog) {
-          return res.status(404).json({ message: "Blog not found" });
-        }
-       
-        // incrementing like count
-        let count = blog.likesCount + +1;
-        await BlogModel.updateOne({ _id: blogId }, { likesCount: count });
+    const userID = req.userID;
+    const { blogId } = req.params;
+    const blog = await BlogModel.findOne({ _id: blogId });
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    const check = await LikeModel.findOne({ blogId, likedBy: userID });
+    if (check) {
+     return res.send({ message: "Already liked" });
+    }
 
-        // getting user from database by it's id 
-        // userId getting from token
-        const user = await UserModel.findOne({ _id: decoded.userId });
-  
-        // in input we are having {blogId: } , so we are creating newObj by tagging userObj
-        const newObj = {
-          ...input,
-          user: { userId: user.id, userName: user.userName },
-        };
-        await LikeModel.create(newObj);
-        res.send("liked");
-      }
-    });
+    await BlogModel.updateOne({ _id: blogId }, { $inc: { likesCount: 1 } });
+
+    await LikeModel.create({ blogId, likedBy: userID });
+    res.send({ message: "liked" });
   } catch (error) {}
+});
+likeRouter.delete("/delete/:blogId", jwtVerify, async (req, res) => {
+  try {
+    const userID = req.userID;
+    const { blogId } = req.params;
+    const blog = await BlogModel.findOne({ _id: blogId });
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    const check = await LikeModel.findOne({ blogId, likedBy: userID });
+    if (!check) {
+     return res.send({ message: "Already disliked" });
+    }
+    await BlogModel.updateOne({ _id: blogId }, { $inc: { likesCount: -1 } });
+    await LikeModel.deleteOne({ blogId, likedBy: userID });
+    res.send({ message: "Disliked" });
+  } catch (error) {
+    console.log(error);
+  }
 });
 module.exports = likeRouter;

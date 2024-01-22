@@ -3,11 +3,10 @@ const mongoose = require("mongoose");
 const likeSchema = mongoose.Schema(
   {
     blogId: String,
-    user: {
-      userId: String,
-      userName: String,
-    }
-    
+    likedBy: {
+      type: String,   
+      
+    }    
   },
   {
     timestamps: true,
